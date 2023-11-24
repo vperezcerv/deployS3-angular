@@ -16,21 +16,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '14'
 
       - name: Install Dependencies
-        run: |
-          cd hola-mundo  # Cambia a la carpeta de tu proyecto Angular
-          npm install
+        run: npm install
 
       - name: Build Angular App
-        run: |
-          cd hola-mundo  # Cambia a la carpeta de tu proyecto Angular
-          npm run build -- --prod
+        run: npm run build -- --prod
 
       - name: Deploy to S3
         run: |
-          aws s3 sync hola-mundo/dist/ s3://bucket-deploys3-angular-vapc-1098824  # Ajusta la ruta de salida
+          aws s3 sync dist/ s3://bucket-deploys3-angular-vapc-1098824
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
