@@ -128,5 +128,5 @@ jobs:
         run: |
           aws s3 sync browser/ s3://deploy-s3-app-angular-vapc-1098824939
         continue-on-error: true
-        working-directory: hola-mundo
+        working-directory: ./dist/hola-mundo
 
