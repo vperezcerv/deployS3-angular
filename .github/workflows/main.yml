@@ -126,7 +126,7 @@ jobs:
       - name: Deploy to S3
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
-          aws s3 sync dist/ s3://deploy-s3-app-angular-vapc-1098824939
+          aws s3 sync browser/ s3://deploy-s3-app-angular-vapc-1098824939
         continue-on-error: true
-        working-directory: .
+        working-directory: hola-mundo
 
