@@ -60,16 +60,20 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
+        working-directory: terraform
 
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
+        working-directory: terraform
+
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
         if: github.event_name == 'pull_request'
         continue-on-error: false
+        working-directory: terraform
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
@@ -111,10 +115,12 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+        working-directory: terraform
     
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
+        working-directory: terraform
 
       - name: Deploy to S3
         run: |
