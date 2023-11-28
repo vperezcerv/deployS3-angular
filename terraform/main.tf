@@ -1,22 +1,67 @@
-resource "aws_s3_bucket" "static_site" {
-  bucket = "bucket-deploys3-angular-vapc-1098824"  # Reemplaza con un nombre único
+# define aws region replace it with your region
 
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
+variable "region" {
+  default = "us-east-1"
+}
+
+# aws provider block
+
+provider "aws" {
+  region = var.region
+}
+
+# S3 static website bucket
+
+resource "aws_s3_bucket" "my-static-website" {
+  bucket = "deploy-s3-app-angular-vapc-1098824939" # give a unique bucket name
+  tags = {
+    Name = "my-static-website"
   }
 }
 
-resource "aws_s3_bucket_acl" "example" {
+resource "aws_s3_bucket_website_configuration" "my-static-website" {
+  bucket = aws_s3_bucket.my-static-website.id
 
-  bucket = aws_s3_bucket.static_site.bucket
-   acl    = "public-read"
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "index.html"
+  }
 }
 
-resource "aws_s3_bucket_object" "web_files" {
-  for_each = fileset("${path.module}/../../dist", "**/*.*")
+resource "aws_s3_bucket_versioning" "my-static-website" {
+  bucket = aws_s3_bucket.my-static-website.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
 
-  bucket = aws_s3_bucket.static_site.bucket
-  key    = each.value
-  source = "${path.module}/../../dist/${each.value}"
+# S3 bucket ACL access
+
+resource "aws_s3_bucket_ownership_controls" "my-static-website" {
+  bucket = aws_s3_bucket.my-static-website.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "my-static-website" {
+  bucket = aws_s3_bucket.my-static-website.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_acl" "my-static-website" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.my-static-website,
+    aws_s3_bucket_public_access_block.my-static-website,
+  ]
+
+  bucket = aws_s3_bucket.my-static-website.id
+  acl    = "public-read"
 }
