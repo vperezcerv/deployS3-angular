@@ -23,11 +23,11 @@ resource "aws_s3_bucket_website_configuration" "my-static-website" {
   bucket = aws_s3_bucket.my-static-website.id
 
   index_document {
-    suffix = "index.html"
+    suffix = "hola-mundo/browser/index.html"
   }
 
   error_document {
-    key = "index.html"
+    key = "hola-mundo/browser/index.html"
   }
 }
 
