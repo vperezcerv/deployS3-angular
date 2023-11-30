@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class DataService {
 
-  private apiUrl = 'http://3.92.18.159//api/data';  // Reemplaza con la URL de tu backend
+  private apiUrl = 'http://3.92.18.159/api/data';  // Reemplaza con la URL de tu backend
 
   constructor(private http: HttpClient) {}
 
